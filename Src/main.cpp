@@ -81,7 +81,7 @@ int main(int argc,char *argv[])
 
     //输出配置信息
     {
-        printf("**************LC WebServer 配置信息***************\n");
+        printf("**************qsj WebServer 配置信息***************\n");
         printf("PID:\t%d\n",getpid());
         printf("端口:\t%d\n",port);
         printf("线程数:\t%d\n",threadNumber);
