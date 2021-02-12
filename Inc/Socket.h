@@ -11,6 +11,7 @@ class ClientSocket;
 
 class ServerSocket
 {
+
 public:
 
     ServerSocket(int port = DEFAULT_PORT,const char *ip = nullptr);
@@ -41,6 +42,7 @@ public:
 
 class ClientSocket
 {
+
 public:
 
     ClientSocket():m_clntfd(-1){}

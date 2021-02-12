@@ -16,7 +16,9 @@
 
 class TimerNode;
 
-class HttpData:public std::enable_shared_from_this<HttpData>{
+class HttpData:public std::enable_shared_from_this<HttpData>
+{
+
 public:
     HttpData():epoll_fd(-1){}
 
@@ -39,6 +41,7 @@ public:
 
     /* 设置定时器 */
     void setTimer(std::shared_ptr<TimerNode> timer);
+
 private:
     std::weak_ptr<TimerNode> weak_timer;
 };

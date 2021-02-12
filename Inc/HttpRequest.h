@@ -16,15 +16,15 @@ struct HttpRequest{
     /* 重载HttpRequest <<  */
     friend std::ostream &operator<<(std::ostream&,const HttpRequest&);
 
-    enum HTTP_VERSION{
+    enum HTTP_VERSION {
         HTTP_10 = 0,HTTP_11,VERSION_NOT_SUPPORT
     };
 
-    enum HTTP_METHOD{
+    enum HTTP_METHOD {
         GET = 0,POST,PUT,DELETE,METHOD_NOT_SUPPORT
     };
 
-    enum HTTP_HEADER{   //映射键
+    enum HTTP_HEADER {   //映射键
         Host = 0,
         User_Agent,
         Connection,         //保存Keep-Alive
@@ -37,7 +37,7 @@ struct HttpRequest{
 
 
     /* unordered_map的自定义hash排序 */
-    struct EnumClassHash{
+    struct EnumClassHash {
         template<typename T>
         std::size_t operator()(T t) const{
             return static_cast<std::size_t>(t);

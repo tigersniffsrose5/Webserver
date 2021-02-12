@@ -9,7 +9,7 @@
  * 在访问网页时，MIME type帮助浏览器识别一个HTTP请求返回
  * 的是什么内容的数据，应该如何打开、如何显示。
  */
-struct MimeType{
+struct MimeType {
     MimeType(const std::string &str):type(str){}
 
     MimeType(const char *str):type(str){}
@@ -23,9 +23,10 @@ extern std::unordered_map<std::string,MimeType> Mime_map;
 
 class HttpResponse
 {
+
 public:
     //访问返回头——键
-    enum HttpStatusCode{
+    enum HttpStatusCode {
         Unknow,
         k200OK = 200,
         k403forbidden = 403,
@@ -37,7 +38,7 @@ public:
                 m_body(nullptr),m_version(HttpRequest::HTTP_10){}
 
 
-    void setStatusCode(HttpStatusCode code){
+    void setStatusCode(HttpStatusCode code) {
         m_statusCode = code;
     }
 
@@ -45,61 +46,61 @@ public:
         return m_statusCode;
     }
 
-    void setBody(const char *buf){
+    void setBody(const char *buf) {
         m_body = buf;
     }
 
     //在输入前准备好，所以是直接设置，而不是累加
-    void setContentLength(int len){
+    void setContentLength(int len) {
         m_contentLength = len;
     }
 
-    void setVersion(const HttpRequest::HTTP_VERSION &version){
+    void setVersion(const HttpRequest::HTTP_VERSION &version) {
         m_version = version;
     }
 
-    const HttpRequest::HTTP_VERSION version() const{
+    const HttpRequest::HTTP_VERSION version() const {
         return m_version;
     }
 
-    void setStatusMsg(const std::string &msg){
+    void setStatusMsg(const std::string &msg) {
         m_statusMsg = msg;
     }
 
-    const std::string &statusMsg()const {
+    const std::string &statusMsg() const {
         return m_statusMsg;
     }
 
-    void setFilePath(const std::string &path){
+    void setFilePath(const std::string &path) {
         m_filePath = path;
     }
 
-    const std::string &filePath() const{
+    const std::string &filePath() const {
         return m_filePath;
     }
 
-    void setMime(const MimeType &mime){
+    void setMime(const MimeType &mime) {
         m_mime = mime;
     }
 
-    void setKeepAlive(bool isAlive){
+    void setKeepAlive(bool isAlive) {
         m_keep_alive = isAlive;
     }
 
-    bool keep_alive() const{
+    bool keep_alive() const {
         return m_keep_alive;
     }
 
     /* 增加返回HTTP协议头 */
-    void addHeader(const std::string &key,const std::string &value){
+    void addHeader(const std::string &key,const std::string &value) {
         m_headers[key] = value;
     }
 
     /* 返回协议内容组成 */
     void constructBuffer(char*)const;
 
-    ~HttpResponse(){
-        if(m_body != nullptr)
+    ~HttpResponse() {
+        if ( m_body != nullptr )
             delete[] m_body;
     }
 

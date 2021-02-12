@@ -16,10 +16,12 @@
 #define BUFFER_SIZE 2048
 
 /* 关键类：用于封装服务器核心类 */
-class HttpServer{
+class HttpServer
+{
+
 public:
     //访问状态机
-    enum FileState{ 
+    enum FileState { 
         FILE_OK = 0,
         FILE_NOT_FOUND,
         FILE_FORBIDDEN 

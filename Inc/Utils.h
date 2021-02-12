@@ -20,31 +20,33 @@ std::string &rtrim(std::string &);
 std::string &trim(std::string &);
 
 /* 互斥锁 */
-class MutexLock{
+class MutexLock
+{
+    
 public:
     /* 禁止拷贝构造 */
     MutexLock(const MutexLock&) = delete;
     MutexLock & operator=(const MutexLock&) = delete;
 
 
-    MutexLock(){
+    MutexLock() {
        // std::cout<<"lock initialize"<<std::endl;
-        if(pthread_mutex_init(&m_mutex,NULL) != 0){
+        if ( pthread_mutex_init(&m_mutex,NULL) != 0 ) {
             throw std::exception();
         }
     }
 
-    ~MutexLock(){
+    ~MutexLock() {
       //  std::cout<<"lock destruction"<<std::endl;
         pthread_mutex_destroy(&m_mutex);
     }
 
-    bool lock(){
+    bool lock() {
      //   std::cout<<"lock down"<<std::endl;
         return pthread_mutex_lock(&m_mutex) == 0;
     }
 
-    bool unlock(){
+    bool unlock() {
      //   std::cout<<"lock off"<<std::endl;
         return pthread_mutex_unlock(&m_mutex) == 0;
     }
@@ -65,10 +67,10 @@ public:
 
     Condition()
     {
-        if(pthread_mutex_init(&m_mutex,NULL) != 0)
+        if ( pthread_mutex_init(&m_mutex,NULL) != 0 )
             throw std::exception();
     
-        if(pthread_cond_init(&m_cond,NULL) != 0)
+        if ( pthread_cond_init(&m_cond,NULL) != 0 )
         {
             //构造函数一旦出现了问题，就应该立即释放已经分配了的资源
             pthread_mutex_destroy(&m_mutex);

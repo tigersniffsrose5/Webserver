@@ -13,7 +13,9 @@
 class HttpData;
 
 //定时器节点类,负责管理节点，包括每个节点自己的时间，保存的数据指针
-class TimerNode{
+class TimerNode
+{
+
 public:
     explicit TimerNode(std::shared_ptr<HttpData> httpData,size_t timeout);
     ~TimerNode();
@@ -26,7 +28,7 @@ public:
     size_t getExpireTime() const {return m_expiredTime_ms;}
 
     /* 是否超时 */
-    bool isExpire(){
+    bool isExpire() {
         return m_expiredTime_ms < m_currentTime_ms;
     }
 
@@ -57,14 +59,16 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////
-struct TimerCmp{
-    bool operator()(std::shared_ptr<TimerNode> &a,std::shared_ptr<TimerNode> &b){
+struct TimerCmp {
+    bool operator()(std::shared_ptr<TimerNode> &a,std::shared_ptr<TimerNode> &b) {
             return a->getExpireTime() > b->getExpireTime();
     }
 };
 
 //定时器管理类：用于管理定时器，用堆管理定时器
-class TimerManager{
+class TimerManager
+{
+
 public:
     using shared_TimerNode = std::shared_ptr<TimerNode>;
 

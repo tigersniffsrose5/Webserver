@@ -14,7 +14,7 @@
 
 
 //线程实际执行的方法类，是HttpServer::do_request
-struct ThreadTask{
+struct ThreadTask {
     //回调函数，实际传的是HttpServer::do_request
     std::function<void(std::shared_ptr<void>)> process; 
     //实际应该是HttpData对象
@@ -22,7 +22,9 @@ struct ThreadTask{
 };
 
 
-class ThreadPool{
+class ThreadPool
+{
+    
 public:
     
     ThreadPool(int thread_number,int max_requests);

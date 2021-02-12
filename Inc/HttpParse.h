@@ -20,19 +20,20 @@ std::ostream &operator<<(std::ostream&,const HttpRequest &);
 /* 有限状态机分析HTTP头 静态类*/
 class HttpRequestParser
 {
+
 public:
     
-    enum LINE_STATE{
+    enum LINE_STATE {
         LINE_OK = 0,LINE_BAD,LINE_MORE
     };
 
-    enum PARSE_STATE{
+    enum PARSE_STATE {
         PARSE_REQUESTLINE=0,    //请求首行
         PARSE_HEADER,           //请求头信息
         PARSE_BODY              //请求体（GET没有，只有POST才有）
     };
 
-    enum HTTP_CODE{
+    enum HTTP_CODE {
         NO_REQUEST,
         GET_REQUEST,
         BAD_REQUEST,
@@ -66,11 +67,11 @@ public:
      * */
     static HTTP_CODE
         parse_content(char *buffer,
-                        int &check_index,
-                        int &read_index,
-                        PARSE_STATE &parse_state,
-                        int &start_index,
-                        HttpRequest &request);
+                      int &check_index,
+                      int &read_index,
+                      PARSE_STATE &parse_state,
+                      int &start_index,
+                      HttpRequest &request);
 
 };
 
