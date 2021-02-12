@@ -37,9 +37,9 @@ void TimerNode::deleted()
 TimerNode::~TimerNode(){
     //析构时如果是被deleted，则httpData为NULL，不处理
     //如果是超时，则需要把Epoll中的httpDataMap对应fd进行删除
-    if(m_httpData){
+    if ( m_httpData ) {
         auto iter = Epoll::httpDataMap.find(m_httpData->m_clntSocket->m_clntfd);
-        if(iter != Epoll::httpDataMap.end()){
+        if ( iter != Epoll::httpDataMap.end() ) {
             Epoll::httpDataMap.erase(iter);
         }
     }
@@ -77,15 +77,17 @@ void TimerManager::handle_expired_event()
     //更新时间
     TimerNode::current_time();
     //std::cout << "开始处理超时事件" << std::endl;
-    while(!m_timerQueue.empty()){
+    while ( !m_timerQueue.empty() ) {
         shared_TimerNode timerNode = m_timerQueue.top();
-        if(timerNode->isDeleted()){
+        if ( timerNode->isDeleted() ) {
             // 删除节点
             m_timerQueue.pop();
-        }else if(timerNode->isExpire()){
+        }
+        else if ( timerNode->isExpire() ) {
             // 过期，删除节点
             m_timerQueue.pop();
-        }else{
+        }
+        else {
             break;
         }
     }

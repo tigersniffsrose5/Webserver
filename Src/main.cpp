@@ -27,9 +27,9 @@ int main(int argc,char *argv[])
     bool daemon         = false;    //开启守护进程
     
 
-    while((opt = getopt(argc,argv,str)) != -1)
+    while ( (opt = getopt(argc,argv,str)) != -1 )
     {
-        switch(opt)
+        switch ( opt ) 
         {
             case 't':
             {
@@ -38,23 +38,21 @@ int main(int argc,char *argv[])
             }
             case 'r':
             {
-                if(!check_base_path(optarg))
-                {
+                if ( !check_base_path(optarg) ) {
                     printf("Warning: \"%s\" is not existed or no permission ,\
                                 will use current dir as website root dir\n",optarg);
                     char tempPath[256];
-                    if(getcwd(tempPath,256) == NULL)
-                    {//get current working dir
+                    if ( getcwd(tempPath,256) == NULL ) {
+                        //get current working dir
                         puts("get current working dir error");
                         basePath = '.';
                     }
-                    else
-                    {
+                    else {
                         basePath = tempPath;
                     }
                     break;
                 }
-                if(optarg[strlen(optarg)-1] == '/'){
+                if ( optarg[strlen(optarg)-1] == '/' ) {
                     optarg[strlen(optarg)-1] = '\0';
                 }
                 basePath = optarg;
@@ -75,7 +73,7 @@ int main(int argc,char *argv[])
         }
     }
 
-    if(daemon)
+    if ( daemon )
         daemon_run();
 
 

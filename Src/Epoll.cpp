@@ -11,8 +11,8 @@ TimerManager Epoll::m_timerManager;
 int Epoll::init(int max_event)
 {
     int epollfd = ::epoll_create(max_event);
-    if(epollfd == -1){
-        std::cout<<"epoll create error"<<std::endl;
+    if ( epollfd == -1 ) {
+        std::cout << "epoll create error" << std::endl;
         exit(-1);
     }
     events = new epoll_event[max_event];
@@ -28,8 +28,8 @@ bool Epoll::addfd(int epoll_fd,int fd,__uint32_t events,std::shared_ptr<HttpData
     //增加httpDataMap索引
     httpDataMap[fd] = HttpData;
     int ret = ::epoll_ctl(epoll_fd,EPOLL_CTL_ADD,fd,&event);
-    if(ret < 0){
-        std::cout<<"epoll add error :"<<errno<<std::endl;
+    if ( ret < 0 ) {
+        std::cout << "epoll add error :" << errno << std::endl;
         httpDataMap[fd].reset();
         //httpDataMap可以不用删除，重用
         return false;
@@ -46,8 +46,8 @@ bool Epoll::modfd(int epoll_fd,int fd,__uint32_t events,std::shared_ptr<HttpData
     //每次更改的时候都要更新 httpDataMap
     httpDataMap[fd] = httpData;
     int ret = ::epoll_ctl(epoll_fd,EPOLL_CTL_MOD,fd,&event);
-    if(ret < 0){
-        std::cout<<"epoll mod error :"<<errno<<std::endl;
+    if ( ret < 0 ) {
+        std::cout << "epoll mod error :" << errno << std::endl;
         httpDataMap[fd].reset();
         //httpDataMap可以不用删除，重用
         return false;
@@ -64,13 +64,13 @@ bool Epoll::delfd(int epoll_fd,int fd,__uint32_t events)
     event.data.fd = fd;
 
     int ret = ::epoll_ctl(epoll_fd,EPOLL_CTL_DEL,fd,&event);
-    if(ret < 0){
+    if ( ret < 0 ) {
         std::cout<<"epoll del error :"<<errno<<std::endl;
         return false;
     }
 
     auto iter = httpDataMap.find(fd);
-    if(iter != httpDataMap.end()){
+    if ( iter != httpDataMap.end() ) {
         iter->second.reset();
         httpDataMap.erase(iter);
     }
@@ -82,7 +82,7 @@ void Epoll::handleConnection(const ServerSocket &serverSocket)
 {
     std::shared_ptr<ClientSocket> tempClient(new ClientSocket);
 
-    while(serverSocket.accept(*tempClient) > 0){
+    while ( serverSocket.accept(*tempClient) > 0 ) {
         //设置成非阻塞
         int ret = setnonblocking(tempClient->m_clntfd);
         
@@ -108,52 +108,49 @@ std::vector<std::shared_ptr<HttpData>>
         Epoll::poll(const ServerSocket &serverSocket,int max_event,int timeout)
 {
     int event_nums = epoll_wait(serverSocket.m_epollfd,events,max_event,timeout);
-    if(event_nums < 0){
-        std::cout<<"epoll_num = "<<event_nums<<std::endl;
-        std::cout<<"epoll_wait error "<<errno<<std::endl;
+    if ( event_nums < 0 ) {
+        std::cout << "epoll_num = " << event_nums << std::endl;
+        std::cout << "epoll_wait error " << errno << std::endl;
         exit(-1);
     }
 
     std::vector<std::shared_ptr<HttpData>> httpDatas;
 
     //主线程只对读入信息作处理
-    for(int i =0;i < event_nums;i++)
-    {
+    for ( int i =0; i < event_nums; i++ ) {
         int fd = events[i].data.fd;
 
         //监听句柄
-        if(fd == serverSocket.m_listenfd)
-        {
+        if ( fd == serverSocket.m_listenfd ) {
             handleConnection(serverSocket);
         }
         //出错的描述符，移除定时器，关闭文件描述符
-        else if(events[i].events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP)) 
-        {
+        else if ( events[i].events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP) ) {
             auto iter = httpDataMap.find(fd);
-            if(iter != httpDataMap.end())
-            {
+            if ( iter != httpDataMap.end() ) {
                 iter->second->closeTimer();
                 ::close(fd);
             }    
         }
-        else if(events[i].events & EPOLLIN)
-        {
+
+        else if ( events[i].events & EPOLLIN ) {
             auto iter = httpDataMap.find(fd);
-            if(iter != httpDataMap.end())
-            {
+            if ( iter != httpDataMap.end() ) {
                 httpDatas.push_back(iter->second);
                 //WARNING:清理定时器？原因未知
                 iter->second->closeTimer();
                 //WARNING:清理fd->httpData映射，原因未知
                 httpDataMap.erase(iter);
             }
-            else
-            {
-                std::cout<<"长连接第二次连接没找到"<<std::endl;
+
+            else {
+                std::cout << "长连接第二次连接没找到" << std::endl;
                 ::close(fd);
             }
             
         }
     }
+
     return httpDatas;
+
 }

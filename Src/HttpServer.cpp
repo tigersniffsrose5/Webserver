@@ -72,12 +72,11 @@ void HttpServer::run(int thread_num,int max_request)
     __uint32_t event = (EPOLLIN | EPOLLET);
     Epoll::addfd(epoll_fd,servSocket.m_listenfd,event,httpData);
 
-    while(true)
-    {
+    while ( true ) {
         //主线程核心逻辑，分发接收到的数据
         std::vector<shared_httpData> events = Epoll::poll(servSocket,MAX_EVENT_NUMBER,-1); 
 
-        for(auto &req : events){
+        for ( auto &req : events ) {
             threadPool.append(req,std::bind(&HttpServer::do_request,this,std::placeholders::_1));
         }
 
@@ -99,19 +98,20 @@ void HttpServer::do_request(std::shared_ptr<void> arg)
     ssize_t recv_data;
     HttpRequestParser::PARSE_STATE parse_state = HttpRequestParser::PARSE_REQUESTLINE;
 
-    while(true){
+    while ( true ) {
         recv_data = recv(sharedHttpData->m_clntSocket->m_clntfd,buffer+read_index,BUFFER_SIZE - read_index,0);
-        if(recv_data == -1){
-            if((errno == EAGAIN) || (errno == EWOULDBLOCK)){
+        if ( recv_data == -1 ) {
+            if ( (errno == EAGAIN) || (errno == EWOULDBLOCK) ) {
                // std::cout<<"recv_data == -1 && errno == "<<errno<<std::endl;
                 break;
             }
-            std::cout<<"reading faild"<<std::endl;
+            std::cout << "reading faild" << std::endl;
+
             return;
         }
 
-        if(recv_data == 0){
-            std::cout<<"Connection closed by peer"<<std::endl;
+        if ( recv_data == 0 ) {
+            std::cout << "Connection closed by peer" << std::endl;
             break;
         }
 
@@ -122,25 +122,25 @@ void HttpServer::do_request(std::shared_ptr<void> arg)
                         buffer,check_index,read_index,parse_state,start_index,*sharedHttpData->m_request);
     
     
-        if(retcode == HttpRequestParser::NO_REQUEST){
+        if ( retcode == HttpRequestParser::NO_REQUEST ) {
             continue;
         }
     
-        if(retcode == HttpRequestParser::GET_REQUEST){
+        if ( retcode == HttpRequestParser::GET_REQUEST ) {
             // 检查keep_alive选项
             auto iter = sharedHttpData->m_request->m_headers.find(HttpRequest::Connection);
-            if(iter != sharedHttpData->m_request->m_headers.end()){
-                if(iter->second == "keep-alive" )
-                {
+            
+            if ( iter != sharedHttpData->m_request->m_headers.end() ) {
+                if ( iter->second == "keep-alive" ) {
                    // std::cout<<"设置keep-alive"<<std::endl;
                     sharedHttpData->m_response->setKeepAlive(true);
                     //timeout = 120
                     std::ostringstream osstr;
-                    osstr<<"timeout="<<TIME_OUT;
+                    osstr << "timeout=" << TIME_OUT;
                     sharedHttpData->m_response->addHeader("Keep-Alive",osstr.str());
                 }
-                else
-                {
+
+                else {
                    // std::cout<<"不设置keep-alive"<<std::endl;
                     sharedHttpData->m_response->setKeepAlive(false);
                 }
@@ -154,22 +154,27 @@ void HttpServer::do_request(std::shared_ptr<void> arg)
             send(sharedHttpData,fileState);
 
             //如果是keep-alive else sharedHttpData将会自动解析释放clientSocket，从而关闭资源
-            if(sharedHttpData->m_response->keep_alive()){
+            if ( sharedHttpData->m_response->keep_alive() ) {
                 //再次添加定时器
                 Epoll::modfd(sharedHttpData->epoll_fd,sharedHttpData->m_clntSocket->m_clntfd,Epoll::DEFAULT_EVENTS,sharedHttpData);
                 Epoll::m_timerManager.addTimer(sharedHttpData,TimerManager::DEFAULT_TIME_OUT);
             }
-        }else{
+
+        }
+
+        else {
             std::cout<<"Bad Request"<<std::endl;
         }
+
     }  
 }
 
 void HttpServer::header(shared_httpData httpData)
 {
-    if(httpData->m_request->HTTP_10){
+    if ( httpData->m_request->HTTP_10 ) {
         httpData->m_response->setVersion(HttpRequest::HTTP_10);
-    }else{
+    }
+    else {
         httpData->m_response->setVersion(HttpRequest::HTTP_11);
     }
     httpData->m_response->addHeader("Server",DEFAULT_SERVER_STRING);
@@ -184,12 +189,13 @@ HttpServer::FileState HttpServer::static_file(shared_httpData httpData,const cha
     strcat(file,httpData->m_response->filePath().c_str());
 
     // 文件不存在
-    if(httpData->m_response->filePath() == "/" || stat(file,&file_stat) < 0){
+    if ( httpData->m_response->filePath() == "/" || stat(file,&file_stat) < 0 ) {
         httpData->m_response->setMime(MimeType("text/html"));
-        if(httpData->m_response->filePath() == "/"){
+        if ( httpData->m_response->filePath() == "/" ) {
             httpData->m_response->setStatusCode(HttpResponse::k200OK);
             httpData->m_response->setStatusMsg("OK");
-        }else{
+        }
+        else {
             httpData->m_response->setStatusCode(HttpResponse::k404NotFound);
             httpData->m_response->setStatusMsg("Not Found");
         }
@@ -197,13 +203,13 @@ HttpServer::FileState HttpServer::static_file(shared_httpData httpData,const cha
     }
 
     //不是普通文件或无访问权限
-    if(!S_ISREG(file_stat.st_mode)){
+    if ( !S_ISREG(file_stat.st_mode) ) {
         //设置MIME为html
         httpData->m_response->setMime(MimeType("text/html"));
         httpData->m_response->setStatusCode(HttpResponse::k403forbidden);
         httpData->m_response->setStatusMsg("ForBidden");
 
-        std::cout<<"not normal file"<<std::endl;
+        std::cout << "not normal file" << std::endl;
         return FILE_FORBIDDEN;
     }
 
@@ -226,20 +232,20 @@ void HttpServer::getMime(std::shared_ptr<HttpData> httpData)
     int pos;
 
     //WARNING：暂时将参数丢掉，后面再搞
-    if((pos = filepath.rfind('?')) != std::string::npos){
+    if ( (pos = filepath.rfind('?')) != std::string::npos ) {
         filepath.erase(filepath.rfind('?'));
     }
     
     //找到后缀名赋值给mime
-    if(filepath.rfind('.')!= std::string::npos){
+    if ( filepath.rfind('.')!= std::string::npos ) {
         mime = filepath.substr(filepath.rfind('.'));
     }
 
     decltype(Mime_map)::iterator iter = Mime_map.find(mime);
-    if(iter != Mime_map.end()){//
+    if ( iter != Mime_map.end() ) {
         httpData->m_response->setMime(iter->second);
     }
-    else{
+    else {
         httpData->m_response->setMime(Mime_map.find("default")->second);
     }
 
@@ -256,14 +262,14 @@ void HttpServer::send(shared_httpData httpData,FileState fileState)
     httpData->m_response->constructBuffer(header);
 
     //404
-    if(fileState == FILE_NOT_FOUND){
+    if ( fileState == FILE_NOT_FOUND ) {
         //如果是'/'就发送默认页
-        if(httpData->m_response->filePath() == std::string("/")){
+        if ( httpData->m_response->filePath() == std::string("/") ) {
             // 构建返回包
             sprintf(header,"%sContent-length: %ld\r\n\r\n",header,strlen(INDEX_PAGE));
             sprintf(header,"%s%s",header,INDEX_PAGE);
         }
-        else{
+        else {
             sprintf(header,"%sContent-length: %ld\r\n\r\n",header,strlen(NOT_FOUND_PAGE));
             sprintf(header,"%s%s",header,NOT_FOUND_PAGE);
         }
@@ -273,7 +279,7 @@ void HttpServer::send(shared_httpData httpData,FileState fileState)
     }
 
     //403
-    if(fileState == FILE_FORBIDDEN){
+    if ( fileState == FILE_FORBIDDEN ) {
         sprintf(header,"%sContent-length: %ld\r\n\r\n",header,strlen(FORBIDDEN_PAGE));
         sprintf(header,"%s%s",header,FORBIDDEN_PAGE);
         ::send(httpData->m_clntSocket->m_clntfd,header,strlen(header),0);
@@ -282,7 +288,7 @@ void HttpServer::send(shared_httpData httpData,FileState fileState)
 
 
     //200
-    if(stat(httpData->m_response->filePath().c_str(),&file_stat) < 0){
+    if ( stat(httpData->m_response->filePath().c_str(),&file_stat) < 0 ) {
         sprintf(header,"%sContent-length: %ld\r\n\r\n",header,strlen(internal_error));
         sprintf(header,"%s%s",header,internal_error);
         ::send(httpData->m_clntSocket->m_clntfd,header,strlen(header),0);
@@ -291,8 +297,8 @@ void HttpServer::send(shared_httpData httpData,FileState fileState)
 
     int filefd = ::open(httpData->m_response->filePath().c_str(),O_RDONLY);
     //打开文件失败
-    if(filefd < 0){
-        std::cout<<"打开文件失败"<<std::endl;
+    if ( filefd < 0 ) {
+        std::cout << "打开文件失败" << std::endl;
         sprintf(header,"%sContent-length: %ld\r\n\r\n",header,strlen(internal_error));
         sprintf(header,"%s%s",header,internal_error);
         ::send(httpData->m_clntSocket->m_clntfd,header,strlen(header),0);

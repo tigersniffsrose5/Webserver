@@ -1,5 +1,6 @@
 #include "CommonHead.h"
 #include "DaemonRun.h"
+
 void daemon_run()
 {
     std::cout<<"daemon run"<<std::endl;
@@ -9,13 +10,12 @@ void daemon_run()
     //2）在子进程中，fork返回0；
     //3）如果出现错误，fork返回一个负值；
     pid = fork();
-    if (pid < 0)
-    {
+    if ( pid < 0 ) {
         std::cout << "fork error" << std::endl;
         exit(-1);
     }
     //父进程退出，子进程独立运行
-    else if (pid > 0) {
+    else if ( pid > 0 ) {
         exit(0);
     }
     //之前parent和child运行在同一个session里,parent是会话（session）的领头进程,
@@ -24,12 +24,14 @@ void daemon_run()
     //这时parent退出之后,将不会影响到child了。
     setsid();    
     int fd = open("/dev/null", O_RDWR, 0);
-    if (fd != -1)
-    {
+    
+    if ( fd != -1 ) {
         dup2(fd, STDIN_FILENO);
         dup2(fd, STDOUT_FILENO);
         dup2(fd, STDERR_FILENO);
     }
-    if (fd > 2)
+
+    if ( fd > 2 )
         close(fd);
+
 }

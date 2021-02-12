@@ -14,11 +14,11 @@ int setnonblocking(int fd)
 bool check_base_path(char *basePath)
 {
     struct stat file;
-    if(stat(basePath,&file) == -1)//返回文件属性
+    if ( stat(basePath,&file) == -1 )//返回文件属性
         return false;
     
     //不是目录，或者不可访问
-    if(!S_ISDIR(file.st_mode) || access(basePath,R_OK) == -1)
+    if ( !S_ISDIR(file.st_mode) || access(basePath,R_OK) == -1 )
         return false;
 
     return true;
@@ -27,8 +27,7 @@ bool check_base_path(char *basePath)
 bool setReusePort(int fd)
 {
     int reuse = 1;
-    if(setsockopt(fd,SOL_SOCKET,SO_REUSEADDR,(void*)&reuse,sizeof(reuse))==-1)
-    {
+    if ( setsockopt(fd,SOL_SOCKET,SO_REUSEADDR,(void*)&reuse,sizeof(reuse))==-1 ) {
         return false;
     }
     
@@ -37,7 +36,7 @@ bool setReusePort(int fd)
 
 std::string &ltrim(std::string &str)
 {
-    if(str.empty()){
+    if ( str.empty() ) {
         return str;
     }
 
@@ -48,7 +47,7 @@ std::string &ltrim(std::string &str)
 
 std::string &rtrim(std::string &str)
 {
-    if(str.empty()){
+    if ( str.empty() ) {
         return str;
     }
 
@@ -59,7 +58,8 @@ std::string &rtrim(std::string &str)
 
 std::string &trim(std::string &str)
 {
-    if(str.empty())return str;
+    if ( str.empty() )
+        return str;
 
     ltrim(str);
     rtrim(str);

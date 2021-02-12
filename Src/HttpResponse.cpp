@@ -28,27 +28,23 @@ std::unordered_map<std::string,MimeType> Mime_map = {
 void HttpResponse::constructBuffer(char* buffer) const
 {
     //版本
-    if(m_version == HttpRequest::HTTP_10)
-    {
+    if ( m_version == HttpRequest::HTTP_10 ) {
         sprintf(buffer,"HTTP/1.0 %d %s\r\n",m_statusCode,m_statusMsg.c_str());
     }
-    else
-    {
+    else {
         sprintf(buffer,"HTTP/1.1 %d %s\r\n",m_statusCode,m_statusMsg.c_str());
     }
 
     //头部字段
-    for(auto iter = m_headers.begin();iter != m_headers.end();iter++){
+    for ( auto iter = m_headers.begin(); iter != m_headers.end(); iter++ ) {
         sprintf(buffer,"%s%s: %s\r\n",buffer,iter->first.c_str(),iter->second.c_str());
     }
 
     //keep-alive
-    if(m_keep_alive)
-    {
+    if ( m_keep_alive ) {
         sprintf(buffer,"%sConnection:keep-alive\r\n",buffer);
     }
-    else
-    {
+    else {
         sprintf(buffer,"%sConnection:close\r\n",buffer);
     }
 }
