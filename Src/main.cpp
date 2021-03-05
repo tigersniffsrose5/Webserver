@@ -6,7 +6,7 @@
 //CGI文件目录
 std::string basePath = ".";
 
-//加入epoll内核，默认是LT
+//加入epoll内核，默认是ET
 void addfd(int epollfd,int fd)
 {
     epoll_event event;
