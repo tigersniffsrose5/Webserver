@@ -18,7 +18,7 @@ cd bin
 - epoll使用EPOLLONESHOT保证一个socket连接在任意时刻都只被一个线程处理。
 - 使用线程池提高并发度，并降低频繁创建线程的开销。
 - 使用RAII手法封装互斥器(pthrea_mutex_t)、条件变量(pthread_cond_t)等线程同步互斥机制，使用RAII管理文件描述符等资源。
-- 使用智能指针管理对象的生命周期。避免内存泄露和空闲指针。
+- 使用智能指针管理对象的生命周期，避免内存泄露。
 #### 开发部署环境
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210212180523365.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzNTc1MTU0,size_16,color_FFFFFF,t_70#pic_center)
 
