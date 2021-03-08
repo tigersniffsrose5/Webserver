@@ -5,6 +5,7 @@ void HttpData::closeTimer()
 {
     //判断Timer是否存在，有可能已经超时释放了
     if ( weak_timer.lock() ) {
+        
         std::shared_ptr<TimerNode> tempTimer(weak_timer.lock());
         tempTimer->deleted();
 

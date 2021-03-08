@@ -1,6 +1,6 @@
 #include "HttpRequest.h"
 
-std::ostream &operator<<(std::ostream &os,const HttpRequest &request)
+std::ostream &operator<<(std::ostream &os, const HttpRequest &request)
 {
     os << "method: " << request.m_method << std::endl;
     os << "uri: " << request.m_uri << std::endl;

@@ -1,9 +1,10 @@
 #include "ThreadPool.h"
 #include <iostream>
 #include <sys/prctl.h>
-ThreadPool::ThreadPool(int thread_number,int max_requests):
-                m_thread_number(thread_number),m_max_requests(max_requests),
-                m_shutdown(false),m_threads(nullptr)
+
+
+ThreadPool::ThreadPool(int thread_number,int max_requests): m_thread_number(thread_number), m_max_requests(max_requests),
+                m_shutdown(false), m_threads(nullptr)
 {
     if ( (thread_number <= 0) || (max_requests <= 0) )
         throw std::exception();
@@ -73,7 +74,7 @@ void* ThreadPool::worker(void *args)
         return nullptr;
 
     //给线程命名
-    prctl(PR_SET_NAME,"EventLoopThread");
+    prctl(PR_SET_NAME, "EventLoopThread");
     
     pool->run();
     return pool;
