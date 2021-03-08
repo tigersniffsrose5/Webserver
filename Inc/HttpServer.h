@@ -4,15 +4,13 @@
  * Socket类创建--->线程池创建--->Epoll创建
  * 请求逻辑
  */
-
-
 #pragma once
-#include <memory>
-
-
 
 #include "Socket.h"
 #include "HttpData.h"
+
+#include <memory>
+
 #define BUFFER_SIZE 2048
 
 /* 关键类：用于封装服务器核心类 */
@@ -20,6 +18,7 @@ class HttpServer
 {
 
 public:
+    
     //访问状态机
     enum FileState { 
         FILE_OK = 0,
@@ -30,16 +29,16 @@ public:
     using shared_httpData = std::shared_ptr<HttpData>;
 
 public:
+
     /* server socket伴随HttpServer创建而初始化 */
-    explicit HttpServer(int port = DEFAULT_PORT,const char *ip = nullptr):
-                servSocket(port,ip)
+    explicit HttpServer(int port = DEFAULT_PORT, const char *ip = nullptr) : servSocket(port, ip)
     {
         assert(servSocket.bind());
         assert(servSocket.listen()); 
     }
 
     /* Http服务类主逻辑 */
-    void run(int thread_num,int max_request = 10000);
+    void run(int thread_num, int max_request = 10000);
 
     /* 请求处理主力函数，主要作为回调函数 */
     void do_request(std::shared_ptr<void> arg);

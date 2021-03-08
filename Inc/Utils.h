@@ -1,13 +1,15 @@
 #pragma once
+
 #include <pthread.h>
 #include <string>
+
 /* 设置fd非阻塞 */
 int setnonblocking(int fd);
 
 /* 检查文件路径是否合法 */
 bool check_base_path(char *basePath);
 
-/* 设置 重用本地地址 */
+/* 设置重用本地地址 */
 bool setReusePort(int fd);
 
 /* 删除字符串左空格 */
@@ -60,6 +62,7 @@ private:
 class Condition
 {
 public:
+
     /* 禁止拷贝构造 */
     Condition(const Condition&) = delete;
     Condition& operator=(const Condition&) = delete;
@@ -67,10 +70,10 @@ public:
 
     Condition()
     {
-        if ( pthread_mutex_init(&m_mutex,NULL) != 0 )
+        if ( pthread_mutex_init(&m_mutex, NULL) != 0 )
             throw std::exception();
     
-        if ( pthread_cond_init(&m_cond,NULL) != 0 )
+        if ( pthread_cond_init(&m_cond, NULL) != 0 )
         {
             //构造函数一旦出现了问题，就应该立即释放已经分配了的资源
             pthread_mutex_destroy(&m_mutex);
@@ -90,7 +93,7 @@ public:
     {
         int ret = 0;
         pthread_mutex_lock(&m_mutex);
-        ret = pthread_cond_wait(&m_cond,&m_mutex);
+        ret = pthread_cond_wait(&m_cond, &m_mutex);
         pthread_mutex_unlock(&m_mutex);
         return ret == 0;
     }
@@ -109,6 +112,7 @@ public:
     
 
 private:
+
     pthread_mutex_t m_mutex;
     pthread_cond_t m_cond;
 };

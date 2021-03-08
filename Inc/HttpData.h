@@ -1,3 +1,8 @@
+/**
+ * 对每次数据传入的封装
+ * 包括：
+ * 客户端链接信息，请求信息，返回信息，所属epoll容器,定时器保存长连接
+ */
 #pragma once
 
 #include <memory>
@@ -7,20 +12,15 @@
 #include "Timer.h"
 #include "Socket.h"
 
-//warning enable_shared_from_this可以不加
-/**
- * 对每次数据传入的封装
- * 包括：
- * 客户端链接信息，请求信息，返回信息，所属epoll容器,定时器保存长连接
- */
-
 class TimerNode;
 
+//warning enable_shared_from_this可以不加
 class HttpData:public std::enable_shared_from_this<HttpData>
 {
 
 public:
-    HttpData():epoll_fd(-1){}
+
+    HttpData():epoll_fd(-1) {}
 
 public:
 
@@ -43,5 +43,7 @@ public:
     void setTimer(std::shared_ptr<TimerNode> timer);
 
 private:
+
     std::weak_ptr<TimerNode> weak_timer;
+
 };

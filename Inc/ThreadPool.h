@@ -5,6 +5,7 @@
  * 
  */
 #pragma once
+
 #include <memory>
 #include <list>
 #include <functional>
@@ -15,10 +16,12 @@
 
 //线程实际执行的方法类，是HttpServer::do_request
 struct ThreadTask {
+
     //回调函数，实际传的是HttpServer::do_request
     std::function<void(std::shared_ptr<void>)> process; 
     //实际应该是HttpData对象
     std::shared_ptr<void> arg;                  
+
 };
 
 
@@ -27,12 +30,12 @@ class ThreadPool
     
 public:
     
-    ThreadPool(int thread_number,int max_requests);
+    ThreadPool(int thread_number, int max_requests);
 
     ~ThreadPool();
 
     //请求插入线程池队列，回调参数，回调方法
-    bool append(std::shared_ptr<void> arg,std::function<void(std::shared_ptr<void>)> fun);
+    bool append(std::shared_ptr<void> arg, std::function<void(std::shared_ptr<void>)> fun);
 
 private:
 
@@ -41,6 +44,7 @@ private:
     void run();
 
 private:
+
     //线程同步互斥
     MutexLock m_mutex;
     Condition m_cond;

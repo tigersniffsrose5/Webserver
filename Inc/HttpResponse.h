@@ -10,15 +10,15 @@
  * 的是什么内容的数据，应该如何打开、如何显示。
  */
 struct MimeType {
-    MimeType(const std::string &str):type(str){}
+    MimeType(const std::string &str) : type(str) {}
 
-    MimeType(const char *str):type(str){}
+    MimeType(const char *str) : type(str) {}
 
     std::string type;
 };
 
 //在.cpp中
-extern std::unordered_map<std::string,MimeType> Mime_map;
+extern std::unordered_map<std::string, MimeType> Mime_map;
 
 
 class HttpResponse
@@ -34,8 +34,8 @@ public:
     };
 
     explicit HttpResponse(bool mKeep = true)
-                :m_statusCode(Unknow),m_keep_alive(mKeep),m_mime("text/html"),
-                m_body(nullptr),m_version(HttpRequest::HTTP_10){}
+                :m_statusCode(Unknow), m_keep_alive(mKeep), m_mime("text/html"),
+                m_body(nullptr), m_version(HttpRequest::HTTP_10) {}
 
 
     void setStatusCode(HttpStatusCode code) {
