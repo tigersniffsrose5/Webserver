@@ -26,7 +26,7 @@ bool setReusePort(int fd)
 {
     int optval = 1;
 
-    if ( setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, (void *)&optval, sizeof(int)) < 0 ) {
+    if ( setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *)&optval, sizeof(int)) < 0 ) {
         return false;
     }
     
